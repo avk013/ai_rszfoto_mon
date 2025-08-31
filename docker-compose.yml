@@ -1,0 +1,23 @@
+services:
+  fetcher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai_foto_car_fetcher:latest
+    command: python fetch_mail.py
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+  detector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai_foto_car_detector:latest
+    command: python detect_cars.py
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
