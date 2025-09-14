@@ -43,14 +43,14 @@ CAMERA_SETTINGS = {
     },
     "vorota2": {
         "desired_classes": [0, 1, 2, 3, 4, 5, 7, 8],
-        "send_email": False,
-        "email_receivers": [os.getenv("GENERAL_EMAIL")],
-        "send_telegram": False,
+        "send_email": True,
+        "email_receivers": [os.getenv("EMAIL_RECEIVER_1"), os.getenv("EMAIL_RECEIVER_2")],
+        "send_telegram": True,
         "telegram_chat_ids": [GENERAL_CHAT_ID]
     },
     "vorota3": {
         "desired_classes": [0, 2, 5],
-        "send_email": False,
+#        "send_email": False,
         "email_receivers": [],
         "send_telegram": False,
 #        "telegram_chat_ids": [os.getenv("TELEGRAM_CHAT_ID_2")]
@@ -58,12 +58,18 @@ CAMERA_SETTINGS = {
     },
     "default": {
         "desired_classes": [0, 1, 2, 3, 5, 6, 7, 8],
-        "send_email": False,
+        "send_email": True,
         "email_receivers": [os.getenv("GENERAL_EMAIL")],
         "send_telegram": True,
         "telegram_chat_ids": [GENERAL_CHAT_ID]
     }
 }
+##############################
+print("GENERAL_EMAIL:", os.getenv("GENERAL_EMAIL"))
+print("EMAIL_RECEIVER_1:", os.getenv("EMAIL_RECEIVER_1"))
+print("EMAIL_RECEIVER_2:", os.getenv("EMAIL_RECEIVER_2"))
+######################
+
 
 # --- Папки ---
 INBOX = "/data/inbox"
@@ -197,12 +203,23 @@ if __name__ == "__main__":
                     detected_text = ", ".join(set(detected_labels))
                     print(f"[+] Объекты '{detected_text}' найдены на {camera_name}.")
 
-                    if settings.get("send_email", False):
-                        subject = f"Обнаружены объекты на камере: {camera_name}"
-                        body = f"На фото {camera_name} найдены: {detected_text}."
-                        email_receivers = settings.get("email_receivers", [])
-                        if email_receivers:
-                            send_mail(subject, body, recipients=email_receivers, attachments=[output_path])
+                    if settings.get("send_email", False) is True:
+                         subject = f"Обнаружены объекты на камере (условно): {camera_name}"
+                         body = f"{camera_name} условно найдены: {detected_text}."
+                         email_receivers = settings.get("email_receivers", [])
+                         if email_receivers:
+                     # Отправляем отдельное письмо каждому получателю
+                            for receiver in email_receivers:
+                                if receiver and receiver.strip():  # Проверяем, что адрес не пустой
+                                    send_mail(subject, body, recipients=[receiver], attachments=[output_path])
+
+
+            #        if settings.get("send_email", False) is True:
+            #            subject = f"Обнаружены объекты на камере (условно): {camera_name}"
+            #            body = f"{camera_name} условно найдены: {detected_text}."
+            #            email_receivers = settings.get("email_receivers", [])
+            #            if email_receivers:
+            #                send_mail(subject, body, recipients=email_receivers, attachments=[output_path])
 
                     if settings.get("send_telegram", False):
                         telegram_chat_ids = settings.get("telegram_chat_ids")

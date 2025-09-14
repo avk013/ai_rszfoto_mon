@@ -6,10 +6,10 @@ from email import encoders
 import os
 
 # --- НАСТРОЙКИ (переменные окружения) ---
-EMAIL_HOST = os.getenv("SMTP_SERVER")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
-EMAIL_ACCOUNT = os.getenv("EMAIL_ACCOUNT")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_HOST = os.getenv("SMTP_SERVER_OUT")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT_OUT", 587))
+EMAIL_ACCOUNT = os.getenv("EMAIL_ACCOUNT_OUT")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD_OUT")
 # -------------------------------------
 
 # Изменена функция: теперь она принимает список recipients
